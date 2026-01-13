@@ -12,12 +12,18 @@ defmodule PaperTrail.Version do
   # @item_type Application.get_env(:paper_trail, :item_type, :integer)
   # @originator_type Application.get_env(:paper_trail, :originator_type, :integer)
 
+  def type_id_prefix, do: "ver"
+
+  @foreign_key_type TypeID
+
+  @primary_key {:id, TypeID, autogenerate: true, prefix: "ver"}
+
   schema "versions" do
     field(:event, :string)
     field(:item_type, :string)
-    field(:item_id, RepoClient.item_type())
+    field(:item_id, :string)
     field(:item_changes, :map)
-    field(:originator_id, RepoClient.originator_type())
+    field(:originator_id, :string)
 
     field(:origin, :string, read_after_writes: RepoClient.origin_read_after_writes())
 

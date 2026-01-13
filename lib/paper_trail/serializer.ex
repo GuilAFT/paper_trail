@@ -26,7 +26,6 @@ defmodule PaperTrail.Serializer do
       originator_id:
         case originator_ref do
           nil -> nil
-          %{id: id} -> id
           model when is_struct(model) -> get_model_id(originator_ref)
         end,
       origin: options[:origin],
@@ -47,7 +46,6 @@ defmodule PaperTrail.Serializer do
       originator_id:
         case originator_ref do
           nil -> nil
-          %{id: id} -> id
           model when is_struct(model) -> get_model_id(originator_ref)
         end,
       origin: options[:origin],
@@ -137,15 +135,7 @@ defmodule PaperTrail.Serializer do
   def get_model_id(%Ecto.Changeset{data: data}), do: get_model_id(data)
 
   def get_model_id(model) do
-    {_, model_id} = List.first(Ecto.primary_key(model))
-
-    case PaperTrail.Version.__schema__(:type, :item_id) do
-      :integer ->
-        model_id
-
-      _ ->
-        "#{model_id}"
-    end
+    to_string(model.id)
   end
 
   @spec serialize_model_changes(nil) :: nil
